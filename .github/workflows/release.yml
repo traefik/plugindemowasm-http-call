@@ -10,25 +10,25 @@ jobs:
     name: Release process
     runs-on: ubuntu-latest
     env:
-      GO_VERSION: 1.21
+      GO_VERSION: 1.22
 
     steps:
       # https://github.com/marketplace/actions/checkout
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       # https://github.com/marketplace/actions/setup-go-environment
       - name: Set up Go ${{ env.GO_VERSION }}
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
+        uses: goreleaser/goreleaser-action@v6
         with:
           version: latest
           args: release --clean --timeout=10m
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

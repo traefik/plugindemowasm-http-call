@@ -1,10 +1,8 @@
 run:
   timeout: 10m
-  skip-files: []
 
 linters-settings:
   govet:
-    check-shadowing: true
   gocyclo:
     min-complexity: 12
   maligned:
@@ -86,6 +84,9 @@ linters-settings:
         disabled: true
       - name: unreachable-code
       - name: redefines-builtin-id
+  gomoddirectives:
+    replace-allow-list:
+      - github.com/http-wasm/http-wasm-guest-tinygo
   testifylint:
     enable:
       - bool-compare
@@ -103,16 +104,7 @@ linters-settings:
 linters:
   enable-all: true
   disable:
-    - deadcode # deprecated
-    - exhaustivestruct # deprecated
-    - golint # deprecated
-    - ifshort # deprecated
-    - interfacer # deprecated
-    - maligned # deprecated
-    - nosnakecase # deprecated
-    - scopelint # deprecated
-    - structcheck # deprecated
-    - varcheck # deprecated
+    - tagliatelle
     - cyclop # duplicate of gocyclo
     - sqlclosecheck # not relevant (SQL)
     - rowserrcheck # not relevant (SQL)
@@ -127,7 +119,7 @@ linters:
     - paralleltest # not relevant
     - nestif # too many false-positive
     - wrapcheck
-    - goerr113 # not relevant
+    - err113 # not relevant
     - nlreturn # not relevant
     - wsl # not relevant
     - exhaustive # not relevant
@@ -146,7 +138,6 @@ linters:
 
 issues:
   exclude-use-default: false
-  max-per-linter: 0
   max-same-issues: 0
   exclude:
     - 'Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*printf?|os\.(Un)?Setenv). is not checked'

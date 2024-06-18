@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -21,14 +22,14 @@ import (
 
 func main() {
 	// Because there is no file mounted in the plugin by default, we configure insecureSkipVerify to avoid having to load rootCas
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
 
 	// Because there is no file mounted in the plugin by default, we configure a default resolver to 1.1.1.1
 	net.DefaultResolver = &net.Resolver{
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
 			d := wasip1.Dialer{
-				Timeout: time.Millisecond * time.Duration(3000),
+				Timeout: time.Millisecond * time.Duration(3000), //nolint:mnd
 			}
 
 			return d.DialContext(ctx, "udp", "1.1.1.1")
@@ -65,7 +66,7 @@ type Demo struct {
 
 type WorldTime struct {
 	Abbreviation string    `json:"abbreviation"`
-	ClientIp     string    `json:"client_ip"`
+	ClientIP     string    `json:"client_ip"`
 	Datetime     time.Time `json:"datetime"`
 	DayOfWeek    int       `json:"day_of_week"`
 	DayOfYear    int       `json:"day_of_year"`
@@ -83,12 +84,12 @@ type WorldTime struct {
 
 // New created a new Demo plugin.
 func New(config Config) (*Demo, error) {
-	if len(config.HeaderName) == 0 {
-		return nil, fmt.Errorf("header name cannot be empty")
+	if config.HeaderName == "" {
+		return nil, errors.New("header name cannot be empty")
 	}
 
 	timezone := "Europe/Paris"
-	if len(config.Timezone) > 0 {
+	if config.Timezone != "" {
 		timezone = config.Timezone
 	}
 	return &Demo{
@@ -105,9 +106,9 @@ func (a *Demo) handleRequest(req api.Request, resp api.Response) (next bool, req
 		return false, reqCtx
 	}
 
-	if response.StatusCode != 200 {
+	if response.StatusCode != http.StatusOK {
 		resp.SetStatusCode(http.StatusInternalServerError)
-		handler.Host.Log(api.LogLevelError, fmt.Sprintf("Could not fetch time %d instead of 200", response.Status))
+		handler.Host.Log(api.LogLevelError, fmt.Sprintf("Could not fetch time %s instead of 200", response.Status))
 		return false, reqCtx
 	}
 	body, err := io.ReadAll(response.Body)
