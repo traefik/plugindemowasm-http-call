@@ -1,0 +1,32 @@
+project_name: plugindemowasm-http-call
+
+builds:
+  - binary: plugin.wasm
+    gobinary: go
+    no_unique_dist_dir: true
+    main: .
+    ldflags:
+      - ''
+    goos:
+      - wasip1
+    goarch:
+      - wasm
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^doc:'
+      - '^chore:'
+      - '^chore(deps):'
+      - '^test:'
+      - '^tests:'
+
+archives:
+  - id: plugindemowasm-http-call
+    name_template: '{{ .ProjectName }}_v{{ .Version }}'
+    format: zip
+    files:
+      - LICENSE
+      - .traefik.yml

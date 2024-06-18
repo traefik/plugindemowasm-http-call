@@ -1,0 +1,10 @@
+displayName: Demo Plugin WASM with HTTP Call
+runtime: wasm
+type: middleware
+iconPath: .assets/icon.png
+
+summary: '[Demo WASM] Add WorldTime from api'
+
+testData:
+  HeaderName: X-World-Time
+  Timezone: Europe/Paris
