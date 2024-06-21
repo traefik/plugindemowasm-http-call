@@ -32,7 +32,7 @@ func main() {
 				Timeout: time.Millisecond * time.Duration(3000), //nolint:mnd
 			}
 
-			return d.DialContext(ctx, "udp", "1.1.1.1")
+			return d.DialContext(ctx, "udp", "1.1.1.1:53")
 		},
 	}
 
